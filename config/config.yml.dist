@@ -18,6 +18,8 @@ monitors:
         search: 200 OK
         timeout: 2
         ssl: false
+      scripts:
+        - /root/send-notification.sh
        
     mail.example.com.:
       recordType: A
@@ -25,3 +27,5 @@ monitors:
         type: tcp
         port: 587
         timeout: 1
+      scripts:
+        - /root/send-notification.sh

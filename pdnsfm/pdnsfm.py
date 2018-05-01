@@ -6,6 +6,8 @@ import yaml
 import socket
 import requests
 import logging
+import actions
+import copy
 from contextlib import closing
 
 STATUS_UNKNOWN = 0
@@ -114,6 +116,7 @@ if __name__ == "__main__":
 
             for zoneMonitor, zoneMonitorData in zoneMonitors.items():
                 recordsForMonitor = getRecordsForZoneMonitor(zoneRecords, zoneMonitor, zoneMonitorData)
+                oldRecordData = copy.deepcopy(recordsForMonitor)
                 
                 # We need at leasat 2 records to fail over
                 if recordsForMonitor == False or len(recordsForMonitor['records']) < 2:
@@ -125,6 +128,14 @@ if __name__ == "__main__":
                 if recordData != False:
                     logging.info('Send the changes in the zone "{}" to the pdns api...'.format(zoneName))
                     result = client.set_zone_records(zoneName, [recordData])
+                    
+                    if 'scripts' in zoneMonitorData and len(zoneMonitorData['scripts']) > 0:
+                        actions.executeActions(zoneMonitorData['scripts'], {
+                            'monitor': zoneMonitor,
+                            'monitorData': zoneMonitorData,
+                            'recordsOld': oldRecordData,
+                            'recordsNew': recordData
+                        })
 
         logging.debug('Wait for the next check...')
         time.sleep(config['interval'])

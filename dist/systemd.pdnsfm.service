@@ -1,0 +1,15 @@
+[Unit]
+Description=pdnsfm
+After=syslog.target
+
+[Service]
+Type=simple
+User=pdnsfm
+Group=pdnsfm
+WorkingDirectory=/opt/powerdns-failover-monitor/
+ExecStart=/opt/powerdns-failover-monitor/pdnsfm/pdnsfm.py
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
