@@ -1,0 +1,27 @@
+pdns:
+  apiUrl: http://127.0.0.1:8080/api/v1
+  apiSecret: secret123
+interval: 30
+logging:
+  enabled: true
+  file: /var/log/pdnsfm.log
+  level: DEBUG
+monitors:
+  example.com.:
+    cdn.example.com.:
+      recordType: A
+      check:
+        type: http
+        host: cdn.example.com
+        port: 80
+        uri: /check.html
+        search: 200 OK
+        timeout: 2
+        ssl: false
+       
+    mail.example.com.:
+      recordType: A
+      check:
+        type: tcp
+        port: 587
+        timeout: 1
